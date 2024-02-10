@@ -67,7 +67,7 @@ def main():
             # print(base64.b64encode(key).decode())
         elif choice == "2":
             encrypted_last_name = bytes.fromhex(
-                input("Enter the encrypted string: "))  # Convert de hex string naar bytes
+                input("Enter the encrypted string: "))  # Convert de hex string naar bytes voor de string
             # Convert de hex string naar bytes voor de key
             key = bytes.fromhex(input("Enter the encryption key: "))
             decrypted_last_name = decrypt_aes_256(encrypted_last_name, key)
