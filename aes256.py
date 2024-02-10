@@ -1,14 +1,19 @@
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes # Import klassen en modules die nodig zijn voor AES-256 encryptie en decryptie
-from cryptography.hazmat.backends import default_backend # Importeer de standaard backend van de cryptography module
-from cryptography.hazmat.primitives import padding # Importeer de padding module van de cryptography module
+# Import klassen en modules die nodig zijn voor AES-256 encryptie en decryptie
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+# Importeer de standaard backend van de cryptography module
+from cryptography.hazmat.backends import default_backend
+# Importeer de padding module van de cryptography module
+from cryptography.hazmat.primitives import padding
 import os
 
 
-def encrypt_aes_256(plain_text, key): 
-    backend = default_backend() # Environment set up waar de encryptie plaatsvindt
-    iv = os.urandom(16)  # Gen random 128-bit IV -> random waarde die ervoor zorgt dat er niet 2x dezelfde ciphertext wordt gegenereerd, nodig voor decryptie
-    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend) # Creeer een AES-256 cipher object met CBC mode
-    encryptor = cipher.encryptor() # Creeer een encryptor object
+def encrypt_aes_256(plain_text, key):
+    backend = default_backend()  # Environment set up waar de encryptie plaatsvindt
+    # Gen random 128-bit IV -> random waarde die ervoor zorgt dat er niet 2x dezelfde ciphertext wordt gegenereerd, nodig voor decryptie
+    iv = os.urandom(16)
+    # Creeer een AES-256 cipher object met CBC mode
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
+    encryptor = cipher.encryptor()  # Creeer een encryptor object
 
     # Pad de data, padding is nodig omdat block cipher input data moet zijn van een bepaalde grootte
     padder = padding.PKCS7(128).padder()
@@ -21,17 +26,20 @@ def encrypt_aes_256(plain_text, key):
 
 
 def decrypt_aes_256(encrypted_data, key):
-    backend = default_backend() # Environment set up waar de decryptie plaatsvindt
-    iv = encrypted_data[:16]  # Extract the IV from the encrypted data
-    ciphertext = encrypted_data[16:]  # Extract the ciphertext
+    backend = default_backend()  # Environment set up waar de decryptie plaatsvindt
+    # IV extracten, de IV is de eerste 16 bytes, dus ik slice de eerste 16 bytes
+    iv = encrypted_data[:16]
+    # Ciphertext extracten, de rest van de bytes is de ciphertext
+    ciphertext = encrypted_data[16:]
 
-    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
-    decryptor = cipher.decryptor()
+    cipher = Cipher(algorithms.AES(key), modes.CBC(
+        iv), backend=backend)  # Maak ciphet object
+    decryptor = cipher.decryptor()  # Maak decryptor object
 
-    # Decrypt the data
+    # Decyption, update wordt aangeroepen op de decryptor met de ciphertext als argument, dan de finalize methode om te zorgen dat het wordt afgesloten
     decrypted_data = decryptor.update(ciphertext) + decryptor.finalize()
 
-    # Remove padding
+    # Padding verwijderen
     unpadder = padding.PKCS7(128).unpadder()
     unpadded_data = unpadder.update(decrypted_data) + unpadder.finalize()
 
@@ -41,14 +49,14 @@ def decrypt_aes_256(encrypted_data, key):
 def main():
     print("Welcome to the AES-256 Encryption/Decryption tool!\n")
     while True:
-        print("1. Encrypt Last Name")
+        print("1. Encrypt string")
         print("2. Decrypt Last Name")
         print("3. Exit")
         choice = input("Please enter your choice: ")
 
         if choice == "1":
             last_name = input("Enter your last name to encrypt: ")
-            key = os.urandom(32)  # Generate a random 256-bit key
+            key = os.urandom(32)  
             encrypted_last_name = encrypt_aes_256(last_name, key)
             print("Encrypted Last Name:", encrypted_last_name.hex())
             print("Encryption Key:", key.hex())
