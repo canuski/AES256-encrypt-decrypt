@@ -5,6 +5,7 @@ from cryptography.hazmat.backends import default_backend
 # Importeer de padding module van de cryptography module
 from cryptography.hazmat.primitives import padding
 import os
+import base64
 
 
 def encrypt_aes_256(plain_text, key):
@@ -47,30 +48,35 @@ def decrypt_aes_256(encrypted_data, key):
 
 
 def main():
+    # Main functie om encryptie en decryptie testen
     print("Welcome to the AES-256 Encryption/Decryption tool!\n")
     while True:
         print("1. Encrypt string")
-        print("2. Decrypt Last Name")
+        print("2. Decrypt string")
         print("3. Exit")
-        choice = input("Please enter your choice: ")
+        choice = input("Enter your choice: ")
 
         if choice == "1":
-            last_name = input("Enter your last name to encrypt: ")
-            key = os.urandom(32)  
+            last_name = input("Enter your string to encrypt: ")
+            key = os.urandom(32)  # Gen een random 256-bit key
             encrypted_last_name = encrypt_aes_256(last_name, key)
-            print("Encrypted Last Name:", encrypted_last_name.hex())
+            print("Encrypted string:", encrypted_last_name.hex())
             print("Encryption Key:", key.hex())
+            # print("Key length in bytes:", len(key))
+            # print("Key length in hexadecimal characters:", len(key.hex()))
+            # print(base64.b64encode(key).decode())
         elif choice == "2":
             encrypted_last_name = bytes.fromhex(
-                input("Enter the encrypted last name: "))
+                input("Enter the encrypted string: "))  # Convert de hex string naar bytes
+            # Convert de hex string naar bytes voor de key
             key = bytes.fromhex(input("Enter the encryption key: "))
             decrypted_last_name = decrypt_aes_256(encrypted_last_name, key)
-            print("Decrypted Last Name:", decrypted_last_name)
+            print("Decrypted string:", decrypted_last_name)
         elif choice == "3":
             print("Exiting...")
             break
         else:
-            print("Invalid choice. Please try again.")
+            print("Invalid choice. Try again.")
 
 
 if __name__ == "__main__":
