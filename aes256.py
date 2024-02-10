@@ -48,7 +48,6 @@ def decrypt_aes_256(encrypted_data, key):
 
 
 def main():
-    # Main functie om encryptie en decryptie testen
     print("Welcome to the AES-256 Encryption/Decryption tool!\n")
     while True:
         print("1. Encrypt string")
@@ -62,9 +61,6 @@ def main():
             encrypted_last_name = encrypt_aes_256(last_name, key)
             print("Encrypted string:", encrypted_last_name.hex())
             print("Encryption Key:", key.hex())
-            # print("Key length in bytes:", len(key))
-            # print("Key length in hexadecimal characters:", len(key.hex()))
-            # print(base64.b64encode(key).decode())
         elif choice == "2":
             encrypted_last_name = bytes.fromhex(
                 input("Enter the encrypted string: "))  # Convert de hex string naar bytes voor de string
